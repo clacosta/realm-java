@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.realmjava.R
 import com.example.realmjava.model.Car
 import com.example.realmjava.model.Person
+import com.example.realmjava.model.migrations.Migration
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import kotlin.random.Random
@@ -17,17 +18,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //Random
-        val nextInt = Random.nextInt(0, 10000)
-        val nextDouble = Random.nextDouble(0.0, 2.0)
-
         //Realm init
         Realm.init(this)
         val config = RealmConfiguration.Builder()
             .name("person.realm")
-            .deleteRealmIfMigrationNeeded()
+            .schemaVersion(2)
+            .migration(Migration())
             .build()
         val realm = Realm.getInstance(config)
+
+        //Random
+        val nextInt = Random.nextInt(0, 10000)
+        val nextDouble = Random.nextDouble(0.0, 2.0)
+
 
         //Get Next Id
         var maxIdPerson: Number? = realm.where(Person::class.java).max("id")
